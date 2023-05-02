@@ -1,0 +1,117 @@
+
+Se mettre sur le répertoire de la clef sur l'ordinateur: 
+ssh -i "key-frankfort.pem" hadoop@ec2-35-159-19-229.eu-central-1.compute.amazonaws.com
+docker run -it -p 8888:8888 jupyter/
+
+ssh -N -f -L localhost:8888:localhost:9443 -i "key-frankfort.pem" hadoop@ec2-35-159-19-229.eu-central-1.compute.amazonaws.com
+
+# resume the paused container
+docker start  65c399059a15
+docker run -it -p 8888:8888 jupyter/scipy-notebook:2023-02-28
+
+
+
+
+tunnel ssh avec une commande 
+ssh -i "key-frankfort.pem" -ND 8157 hadoop@ec2-3-66-155-146.eu-central-1.compute.amazonaws.com
+http://ec2-3-66-155-146.eu-central-1.compute.amazonaws.com:18080/		
+
+jupyterhub fonctionne ?
+lancer le service : sudo systemctl start jupyterhub.service
+
+installe un jupyter service :
+sudo yum update
+sudo yum install python3-dev python3-pip
+sudo pip3 install -U virtualenv  # system-wide install
+
+
+
+
+
+
+
+ssh -i ~/mykeypair.pem -N -L 8157:ec2-###-##-##-###.compute-1.amazonaws.com:9443 hadoop@ec2-###-##-##-###.compute-1.amazonaws.com
+
+
+création du tunnel ssh :
+ssh -i "key-frankfort.pem" -D 8157 hadoop@ec2-xxxxxxx.compute.amazonaws.com
+
+historique Spark : 
+http://hadoop@ec2-18-196-54-81.eu-central-1.compute.amazonaws.com:18080/
+
+HADOOP 
+http://hadoop@ec2-18-196-54-81.eu-central-1.compute.amazonaws.com:8088/
+
+jupyterhub
+http://hadoop@ec2-18-196-54-81.eu-central-1.compute.amazonaws.com:9443/
+
+
+
+------ 
+aws emr create-cluster --release-label emr-6.7.0 --name 'cluster-emr-kathy' --applications Name=Hadoop Name=Spark Name=JupyterHub Name=TensorFlow --ec2-attributes KeyName=key-frankfort,InstanceProfile=EMR_EC2_DefaultRole ^
+  --service-role EMR_DefaultRole --instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m5.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m5.xlarge --region eu-central-1 --log-uri s3://p8-data-fruit-cb/Logs ^ 
+--bootstrap-actions Name='Install Jupyter notebook',Path="s3://aws-bigdata-blog/artifacts/aws-blog-emr-jupyter/install-jupyter-emr5.sh",Args=[--toree,--torch,--ruby,--ds-packages,--ml-packages,--python-packages,'ggplot nilearn',--port,8885,--password,jupyter,--jupyterhub,--jupyterhub-port,8002,--cached-install,--notebook-dir,s3://p8-data-fruit-cb/notebooks/,--copy-samples]
+
+   
+aws emr create-cluster ^
+--release-label emr-6.7.0 ^
+--name 'cluster-emr-kathy' --applications Name=Hadoop Name=Spark Name=JupyterHub Name=TensorFlow ^
+--ec2-attributes KeyName=key-frankfort,InstanceProfile=EMR_EC2_DefaultRole ^
+--service-role EMR_DefaultRole ^
+--instance-groups InstanceGroupType=MASTER,InstanceCount=1,InstanceType=m5.xlarge InstanceGroupType=CORE,InstanceCount=2,InstanceType=m5.xlarge ^
+--region eu-central-1 ^
+--log-uri s3://p8-data-fruit-cb/Logs/ ^
+--bootstrap-actions "Name='Install Jupyter notebook',Path='s3://p8-data-fruit-cb/install-jupyter-emr6.sh',Args=[--toree,--torch,--ruby,--ds-packages,--ml-packages,--python-packages,'ggplot nilearn',--port,8885,--password,jupyter,--jupyterhub,--jupyterhub-port,8002,--cached-install,--notebook-dir,s3://p8-data-fruit-cb/notebooks/,--copy-samples]"
+
+--toree --torch --ds-packages --ml-packages --python-packages 'ggplot nilearn' --port 8885 --password jupyter --jupyterhub --jupyterhub-port 8002 --cached-install --notebook-dir s3://p8-data-fruit-cb/notebooks/ --copy-samples
+
+
+https://9443/ec2-user@ec2-3-70-214-123.eu-central-1.compute.amazonaws.com
+
+lynx http://ip-###-##-##-###.eu-central-1.compute.internal:8088/
+
+ec2-3-70-214-123.eu-central-1.compute.amazonaws.com
+
+---tunneling vers jupyterhub pas ok
+ssh -i "key-frankfort.pem" -N -L 8989:ec2-18-197-40-44.eu-central-1.compute.amazonaws.com:9443 hadoop@ec2-18-197-40-44.eu-central-1.compute.amazonaws.com
+puis http://localhost:8989/ dans la barre d'adresse
+
+
+
+
+---tunneling vers ressource manager ok ! 
+ssh -i "key-frankfort.pem" -N -L 8989:ec2-18-197-40-44.eu-central-1.compute.amazonaws.com:8088 hadoop@ec2-18-197-40-44.eu-central-1.compute.amazonaws.com
+puis http://localhost:8989/ dans la barre d'adresse
+
+---- 27/02/2023
+---instance EC2
+
+sudo apt-get update
+cd /tmp
+
+pour anaconda : 
+https://www.hostinger.com/tutorials/how-to-install-anaconda-on-ubuntu/
+
+
+wget https://repo.anaconda.com/archive/Anaconda3-2022.05-Linux-x86_64.sh
+sha256sum Anaconda3-2022.05-Linux-x86_64.sh
+bash Anaconda3-2022.05-Linux-x86_64.sh
+source ~/.bashrc
+
+
+pour jupyter :
+sudo apt install jupyter-core
+cd ~/.jupyter/
+
+
+
+-------tunnel !!!!!!!
+autoriser le port 22 ssh avec mon IP pas le 00000/0
+le port 9443 est le jupyterhub
+ssh -i "key-frankfort.pem" -N -L 5555:ec2-3-69-53-127.eu-central-1.compute.amazonaws.com:9443 hadoop@ec2-3-69-53-127.eu-central-1.compute.amazonaws.com
+https://localhost:5555/
+
+
+
+--- se connecter à l'instance EMR :
+ssh -i "key-frankfort.pem" hadoop@ec2-3-69-53-127.eu-central-1.compute.amazonaws.com
