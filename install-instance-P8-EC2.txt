@@ -1,0 +1,66 @@
+---environnement du serveur et applications
+step 1 :
+choisir une AMI (syst exploit)
+step 2 : choix d'une instance
+step 3 : detail de l'instance
+
+step 4  : anaconda
+wget https://repo.anaconda.com/archive/Anaconda3-2022.10-Linux-x86_64.sh
+bash Anaconda3-2022.10-Linux-x86_64.sh 
+---------------------------------------->installed at home/ubuntu/anaconda3
+
+python : 
+which python
+source .bashrc
+
+certificate de connexion sur anaconda : 
+mkdir certs
+cd certs
+sudo openssl req -x509 -nodes -days 365 -newkey rsa:1024 -keyout cert.pem -out cert.pem
+sudo chmod -R a+rw /home/hadoop/certs/cert.pem
+sudo chown $USER:$USER /home/hadoop/certs/cert.pem
+
+Pour configurer jupyter notebook config file : 
+jupyter notebook --generate-config
+cd ~/.jupyter
+~/.jupyter ls
+jupyter-notebook-config.py
+nano jupyter-notebook-config.py
+
+dans le fichier de la configuration :
+c=get_config() 
+c=NotebookApp.certfile = u’/home/ubuntu/certs/cert.pem’
+c = NotebookApp.ip = ‘*’
+c.NotebookApp.open_browser = False 
+c.NotebookApp.port = 5555 
+CTRL + O pour sauver
+CTRL + X pour sortir
+
+tunnel ssh : https://medium.com/@apbetahouse45/how-to-run-jupyter-notebooks-on-remote-server-part-1-ssh-a2be0232c533
+
+jupyter notebook --no-browser --port=5555 --NotebookApp.token='' --NotebookApp.password=''
+le web browser se trouve à : http://localhost:5555
+
+
+---pour installer Spark
+sudo apt update
+sudo apt install default-jre
+sudo apt install scala
+export PATH=$PATH:$HOME/anaconda3/bin
+conda install pip
+pip install py4j
+wget https://archive.apache.org/dist/spark/spark-3.3.2/spark-3.3.2-bin-hadoop3.tgz
+ls
+sudo tar -zxvf spark-3.3.2-bin-hadoop3.tgz
+pip install findspark
+
+
+
+----aller voir une log : sudo cat  /var/log/unattended-upgrades/unattended-upgrades.log
+----- Résoudre kept back package suite à la log :
+sudo apt-get install linux-aws linux-headers-aws linux-image-aws nvidia-fabricmanager-515
+
+
+---- commandes dans le serveur
+connection ssh  :
+ssh -i "key-frankfort.pem" hadoop@ec2-3-126-209-18.eu-central-1.compute.amazonaws.com
